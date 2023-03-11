@@ -1,0 +1,11 @@
+docker-build:
+  # Use the official docker image.
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$ECR_USER" -p "$ECR_AUTH_TOKEN" $ECR_REGISTRY
+  script:      
+      - docker build --pull -t "$ECR_REGISTRY/$ECR_IMAGE_NAME:$CI_COMMIT_SHORT_SHA" /app
+      - docker push "$ECR_REGISTRY/$ECR_IMAGE_NAME:$CI_COMMIT_SHORT_SHA"
